@@ -1,0 +1,22 @@
+.auto-keyword select {
+    width: 100%;
+    margin-bottom: 15px;
+}
+
+.tl-row {
+    margin-bottom: 15px;
+}
+
+.tl-row:last-child {
+    margin:0;
+}
+
+.tl-row label {
+    display:block;
+}
+
+.tl-row input[type="text"],
+.tl-row input[type="number"] {
+    width: 100%;
+}
+
