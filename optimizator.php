@@ -37,7 +37,7 @@ function ma_meta_function(){
     <div class="auto-keyword">
         <div class="tl-row">
             <label for="to-insert">Mot clé : </label>
-            <input id="to-insert" type="text" name="to-insert" value=""/>
+            <input id="to-insert" type="text" name="to-insert" value="J'insère une phrase."/>
         </div>
 
         <select id="type">
@@ -52,9 +52,13 @@ function ma_meta_function(){
 
         <div class="tl-row densite-number" style="display:none">
             <label for="densite">Densité % : </label>
-            <input id="densite" type="number" name="densite" value=""/>
+            <input id="densite" type="number" name="densite" value="10"/>
         </div>
 
+        <div>
+            <input type="checkbox" for="phraseOnly" id="phraseOnly">
+            <label for="phraseOnly">Insertion de phrase</label>
+        </div>
 
         <div class="text-length">
             L'article fait <span><?php echo word_count(); ?></span> mots au total.
@@ -137,6 +141,7 @@ function ma_meta_function(){
         }
 
         function insertKeywords(nbOccurence, keyword) {
+            //console.log("insert Keywords");
             var toInsert = keyword;
             var selectedText = tinyMCE.activeEditor.selection.getContent( {format : "html"} );
             var nbOccurences = nbOccurence;
@@ -144,36 +149,68 @@ function ma_meta_function(){
             // Si du texte a été sélectionné
             if ( selectedText != "" ){
 
-                var splittedText = selectedText.split(/\s+/);
-                for(i = 0; i < nbOccurences; i++) {
-                    var random = getRandomInt(splittedText.length);
-                    if(splittedText[random-1].substr(splittedText[random-1].length - 1) == ".") {
-                        splittedText[random] = minimizeFirstLetter(splittedText[random]);
-                        splittedText.splice(random, 0, capitalizeFirstLetter(toInsert));
-                    }
-                    else {
+                if($('#phraseOnly').is(':checked')) {
+                    //console.log('phrase only');
+                    var splittedText = selectedText.split(".");
+                    for(i = 0; i < nbOccurences; i++) {
+                        var random = getRandomInt(splittedText.length);
+                        if(splittedText[random-1] != toInsert) {
+                            splittedText[random-1] = splittedText[random-1] + ".";
+                        }
                         splittedText.splice(random, 0, toInsert);
                     }
                 }
+                else {
+                    var splittedText = selectedText.split(/\s+/);
+                    for(i = 0; i < nbOccurences; i++) {
+                        var random = getRandomInt(splittedText.length);
+                        if(splittedText[random-1].substr(splittedText[random-1].length - 1) == ".") {
+                            splittedText[random] = minimizeFirstLetter(splittedText[random]);
+                            splittedText.splice(random, 0, capitalizeFirstLetter(toInsert));
+                        }
+                        else {
+                            splittedText.splice(random, 0, toInsert);
+                        }
+                    }
+                }
+
                 var newText = splittedText.join(" ");
                 var mainText = tinyMCE.activeEditor.getContent( {format : "html"} );
                 textReplaced = mainText.replace(selectedText, newText);
                 tinyMCE.activeEditor.setContent(textReplaced);
+
             }
             else {
-                var text = tinyMCE.activeEditor.getContent( {format : "html"} );
-                var splittedText = text.split(/\s+/);
 
-                for(i = 0; i < nbOccurences; i++) {
-                    var random = getRandomInt(splittedText.length);
-                    if(splittedText[random-1].substr(splittedText[random-1].length - 1) == ".") {
-                        splittedText[random] = minimizeFirstLetter(splittedText[random]);
-                        splittedText.splice(random, 0, capitalizeFirstLetter(toInsert));
-                    }
-                    else {
+                var text = tinyMCE.activeEditor.getContent( {format : "html"} );
+
+                if($('#phraseOnly').is(':checked')) {
+                    //console.log('phrase only');
+                    var splittedText = text.split(".");
+                    for(i = 0; i < nbOccurences; i++) {
+                        var random = getRandomInt(splittedText.length);
+                        if(splittedText[random-1] != toInsert) {
+                            splittedText[random-1] = splittedText[random-1] + ".";
+                        }
                         splittedText.splice(random, 0, toInsert);
                     }
                 }
+                else {
+                    var splittedText = text.split(/\s+/);
+                    for(i = 0; i < nbOccurences; i++) {
+                        var random = getRandomInt(splittedText.length);
+                        if(splittedText[random-1].substr(splittedText[random-1].length - 1) == ".") {
+                            splittedText[random] = minimizeFirstLetter(splittedText[random]);
+                            splittedText.splice(random, 0, capitalizeFirstLetter(toInsert));
+                        }
+                        else {
+                            splittedText.splice(random, 0, toInsert);
+                        }
+                    }
+                }
+
+                //console.log(splittedText);
+
                 var newText = splittedText.join(" ");
                 tinyMCE.activeEditor.setContent(newText);
             }
