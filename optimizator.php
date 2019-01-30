@@ -2,8 +2,8 @@
 /*
 Plugin Name: Auto-Optimiz
 Description: SEO Optimizator 8000
-Version: 0.1
-Author: Lataste Théo
+Version: 0.2
+Author: Yago-zat
 License: GPL2
 */
 
